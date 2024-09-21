@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createClient } from 'contentful';
 import { from } from 'rxjs';
-import { environment } from '../environments';
+// import { environment } from '../environments';
 import { TypeTextBoxFields } from './content-types';
 import { TypeTextBoxSkeleton } from './content-types';
 
@@ -11,9 +11,11 @@ import { TypeTextBoxSkeleton } from './content-types';
 export class ContentService {
 
   client = createClient({
-    space: environment.contentful.spaceId,
-    accessToken: environment.contentful.accessToken,
-    environment: environment.contentful.environment
+    // space: environment.contentful.spaceId,
+    space: process.env.CONTENTFUL_SPACE_ID!,
+    // accessToken: environment.contentful.accessToken,
+    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN!,
+    // environment: environment.contentful.environment
   });
 
   constructor() { }
