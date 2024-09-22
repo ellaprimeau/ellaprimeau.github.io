@@ -15,7 +15,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@ngx-env/builder:application",
+          "builder": "@ngx-env/builder:browser",
           "options": {
             "outputPath": "dist/ellasite",
             "index": "src/index.html",
@@ -66,25 +66,25 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@ngx-env/builder:application",
+          "builder": "@ngx-env/builder:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ellasite:build:production"
+              "buildTarget": "ellasite:build:production"
             },
             "development": {
-              "browserTarget": "ellasite:build:development"
+              "buildTarget": "ellasite:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@ngx-env/builder:application",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ellasite:build"
+            "buildTarget": "ellasite:build"
           }
         },
         "test": {
-          "builder": "@ngx-env/builder:application",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": [
               "src/polyfills.ts",

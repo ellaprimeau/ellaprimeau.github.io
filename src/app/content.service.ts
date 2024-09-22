@@ -12,10 +12,10 @@ export class ContentService {
 
   client = createClient({
     // space: environment.contentful.spaceId,
-    space: import.meta.env.NG_APP_CONTENTFUL_SPACE_ID!,
+    space: import.meta.env.NG_APP_CONTENTFUL_SPACE_ID,
     // accessToken: environment.contentful.accessToken,
 
-    accessToken: import.meta.env.NG_APP_CONTENTFUL_ACCESS_TOKEN!,
+    accessToken: import.meta.env.NG_APP_CONTENTFUL_ACCESS_TOKEN,
     // environment: environment.contentful.environment
   });
 
