@@ -1,5 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+/GTFS/*
+
 # Env File
 /src/environments.ts
 .env*
@@ -47,3 +49,4 @@ testem.log
 .DS_Store
 Thumbs.db
 .env*.local
+.vercel
