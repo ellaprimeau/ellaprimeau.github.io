@@ -1,10 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-route-info',
   templateUrl: './route-info.component.html',
   styleUrls: ['./route-info.component.scss']
 })
-export class RouteInfoComponent {
+export class RouteInfoComponent implements AfterViewInit {
+  private map : any;
 
+  private initMap(): void {
+    this.map = L.map('map', {
+      center: [39.8282, -98.7594],
+      zoom: 3
+    });
+    const tiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      minZoom: 3,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
+    tiles.addTo(this.map);
+
+  }
+  constructor() {}
+
+  ngAfterViewInit(): void {
+    this.initMap()
+  }
 }
