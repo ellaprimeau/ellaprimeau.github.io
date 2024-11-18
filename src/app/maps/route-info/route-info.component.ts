@@ -14,7 +14,7 @@ export class RouteInfoComponent implements AfterViewInit {
       center: [39.8282, -98.7594],
       zoom: 3
     });
-    const tiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png', {
+    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       minZoom: 3,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -22,6 +22,7 @@ export class RouteInfoComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
 
+    
   }
   constructor() {}
 
