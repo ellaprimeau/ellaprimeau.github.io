@@ -8,21 +8,23 @@ import * as L from 'leaflet';
 })
 export class RouteInfoComponent implements AfterViewInit {
   private map : any;
-
+  private mapApiKey = import.meta.env.NG_APP_MAP_API_KEY;
   private initMap(): void {
     this.map = L.map('map', {
       center: [39.8282, -98.7594],
       zoom: 3
     });
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const tiles = L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}@2x.png?key='+this.mapApiKey, {
+      tileSize: 512,
+      zoomOffset: -1,
       maxZoom: 18,
       minZoom: 3,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
     });
 
     tiles.addTo(this.map);
 
-    
+
   }
   constructor() {}
 

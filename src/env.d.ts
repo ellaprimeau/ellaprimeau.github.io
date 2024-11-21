@@ -8,4 +8,5 @@ interface ImportMetaEnv {
   readonly NG_APP_CONTENTFUL_ACCESS_TOKEN: string;
   readonly NG_APP_CONTENTFUL_PREVIEW_ACCESS_TOKEN: string;
   readonly NG_APP_CONTENTFUL_SPACE_ID: string;
+  readonly NG_APP_MAP_API_KEY: string;
 }
