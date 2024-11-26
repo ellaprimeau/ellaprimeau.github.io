@@ -1,6 +1,6 @@
 {
   "framework": "angular",
   "rewrites": [
-    { "source": "(.*)/api", "destination ": "/flaskAPI/app"}
+    { "source": "(.*)/api", "destination": "/flaskAPI/app"}
   ]
 }
