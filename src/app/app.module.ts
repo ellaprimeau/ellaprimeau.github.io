@@ -8,6 +8,7 @@ import { MapsComponent } from './maps/maps.component';
 import { HomeComponent } from './home/home.component';
 import { MapBarComponent } from './maps/map-bar/map-bar.component';
 import { RouteInfoComponent } from './maps/route-info/route-info.component';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -20,10 +21,11 @@ import { RouteInfoComponent } from './maps/route-info/route-info.component';
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routeConfig)
+    RouterModule.forRoot(routeConfig),
   ],
   providers: [
-    provideRouter(routeConfig)
+    provideRouter(routeConfig),
+    provideHttpClient()
   ],
   bootstrap: [AppComponent]
 })

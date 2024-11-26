@@ -12,6 +12,7 @@
 /out-tsc
 /bazel-out
 /.vercel
+vercel.local.json
 
 # Node
 /node_modules

@@ -1,4 +1,5 @@
 from flask import Flask
+import json
 
 app = Flask(__name__)
 
@@ -8,4 +9,4 @@ def hello_world():
 
 @app.route("/api/test")
 def test():
-	return("test")
+	return {"information": "yes"}
