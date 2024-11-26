@@ -1,5 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
+import * as geojson from 'geojson';
+import * as coords from '../../../../coords.json'
 
 @Component({
   selector: 'app-route-info',
@@ -11,8 +13,8 @@ export class RouteInfoComponent implements AfterViewInit {
   private mapApiKey = import.meta.env.NG_APP_MAP_API_KEY;
   private initMap(): void {
     this.map = L.map('map', {
-      center: [39.8282, -98.7594],
-      zoom: 3
+      center: [45.424721, -75.695000],
+      zoom: 12
     });
     const tiles = L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}@2x.png?key='+this.mapApiKey, {
       tileSize: 512,
@@ -23,6 +25,32 @@ export class RouteInfoComponent implements AfterViewInit {
     });
 
     tiles.addTo(this.map);
+
+
+
+    var geojsonFeature: geojson.Feature = ({
+        "type": "Feature",
+        "properties": {
+            "name": "Coors Field",
+            "amenity": "Baseball Stadium",
+            "popupContent": "This is where the Rockies play!"
+        },
+        "geometry": {
+            "type": "LineString",
+            "coordinates": coords
+        }
+    });
+
+    function onEachFeature(feature: any, layer: any) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.popupContent) {
+            layer.bindPopup(feature.properties.popupContent);
+        }
+    }
+
+    L.geoJSON(geojsonFeature, {
+      onEachFeature: onEachFeature
+    }).addTo(this.map);
 
 
   }
