@@ -1,6 +1,6 @@
 {
   "framework": "angular",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/app.py"}
+    { "source": "/api/:path*", "destination": "/api/app.py/:path"}
   ]
 }
