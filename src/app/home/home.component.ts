@@ -12,6 +12,7 @@ import { RequestService } from '../request.service';
 })
 export class HomeComponent {
   textBox = ``;
+  text = '';
   constructor(public contentService: ContentService, public requestService: RequestService) {}
 
   ngOnInit(): void {
@@ -20,7 +21,8 @@ export class HomeComponent {
         this.textBox = documentToHtmlString(element.fields.body);
       })
     })
-    this.requestService.get('/api/test').subscribe(data => {
+    this.requestService.get('/api/getShapes').subscribe(data => {
+      this.text = JSON.stringify(data);
       console.log(data);
     })
   }
