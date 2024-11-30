@@ -1,6 +1,6 @@
 from flask import Flask
 import json
-from shapes import Shapes
+# from shapes import Shapes
 import requests
 import os
 from fauna import fql
