@@ -19,7 +19,12 @@ def hello_world():
 
 @app.route("/api/shape/<shape_id>")
 def getShape(shape_id):
-	return fauna.query(fql('shapes.shape_id("{}")'.format(shape_id))).data
+	shape = fauna.query(fql('shapes.shape_id("{}")'.format(shape_id))).data.data[0].get('shape')
+	returnShapes = []
+	for seg in shape:
+		returnShapes.append([seg['shape_pt_lon'],seg['shape_pt_lat']])
+	return returnShapes
+
 
 # @app.route("/api/getShapes")
 # def getShapes():

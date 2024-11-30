@@ -1,7 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
+import { RequestService } from '../../request.service';
 import * as L from 'leaflet';
 import * as geojson from 'geojson';
-import * as coords from '../../../../coords.json'
 
 @Component({
   selector: 'app-route-info',
@@ -9,13 +9,17 @@ import * as coords from '../../../../coords.json'
   styleUrls: ['./route-info.component.scss']
 })
 export class RouteInfoComponent implements AfterViewInit {
+  constructor(public requestService: RequestService) {}
+
+  private coords : any;
   private map : any;
   private mapApiKey = import.meta.env.NG_APP_MAP_API_KEY;
-  private initMap(): void {
+  private async initMap(): Promise<void> {
     this.map = L.map('map', {
       center: [45.424721, -75.695000],
       zoom: 12
     });
+
     const tiles = L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}@2x.png?key='+this.mapApiKey, {
       tileSize: 512,
       zoomOffset: -1,
@@ -26,7 +30,9 @@ export class RouteInfoComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
 
+    this.coords = await this.requestService.get('/api/shape/shp-110-52').toPromise();
 
+    console.log(this.coords)
 
     var geojsonFeature: geojson.Feature = ({
         "type": "Feature",
@@ -37,9 +43,11 @@ export class RouteInfoComponent implements AfterViewInit {
         },
         "geometry": {
             "type": "LineString",
-            "coordinates": coords
+            "coordinates": this.coords
         }
     });
+
+    console.log(geojsonFeature);
 
     function onEachFeature(feature: any, layer: any) {
         // does this feature have a property named popupContent?
@@ -54,7 +62,6 @@ export class RouteInfoComponent implements AfterViewInit {
 
 
   }
-  constructor() {}
 
   ngAfterViewInit(): void {
     this.initMap()
