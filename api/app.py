@@ -2,26 +2,32 @@ from flask import Flask
 import json
 from shapes import Shapes
 import requests
+import os
+from fauna import fql
+from fauna.client import Client
 
 app = Flask(__name__)
+faunaDomain = os.environ.get('FAUNA_DB_DOMAIN')
+faunaKey = os.environ.get('FAUNA_ADMIN_KEY')
 
 localShapes = {}
+fauna = Client(secret=faunaKey)
 
 @app.route("/api/")
 def hello_world():
 	return("<p>hello world</p>")
 
-@app.route("/api/test")
-def test():
-	return {"information": "yes"}
+@app.route("/api/shape/<shape_id>")
+def getShape(shape_id):
+	return fauna.query(fql('shapes.shape_id("{}")'.format(shape_id))).data
 
-@app.route("/api/getShapes")
-def getShapes():
-	if localShapes == {}:
-		s = requests.get('https://media.githubusercontent.com/media/ellaprimeau/GTFS/refs/heads/main/shapes.txt', stream=True).text
-		with open('./gtfs/shapes.txt', 'w+') as f:
-			f.write(s)
+# @app.route("/api/getShapes")
+# def getShapes():
+	# if localShapes == {}:
+		# s = requests.get('https://media.githubusercontent.com/media/ellaprimeau/GTFS/refs/heads/main/shapes.txt', stream=True).text
+		# with open('./gtfs/shapes.txt', 'w+') as f:
+			# f.write(s)
 		# localShapes = Shapes('./gtfs/shapes.txt')
 		# return localShapes.get('shp-10-03')
-	else:
-		return
+	# else:
+		# return
