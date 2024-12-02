@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { RequestService } from '../../request.service';
 import * as L from 'leaflet';
 import * as geojson from 'geojson';
@@ -8,33 +8,34 @@ import * as geojson from 'geojson';
   templateUrl: './route-info.component.html',
   styleUrls: ['./route-info.component.scss']
 })
-export class RouteInfoComponent implements AfterViewInit {
+export class RouteInfoComponent implements AfterViewInit, OnInit {
   constructor(public requestService: RequestService) {}
 
+  public shapes: any;
   private coords : any;
-  private map : any;
+  public map : any;
+  public mapLayer = L.geoJSON(null);
+  private geojsonFeature : any;
   private mapApiKey = import.meta.env.NG_APP_MAP_API_KEY;
-  private async initMap(): Promise<void> {
-    this.map = L.map('map', {
-      center: [45.424721, -75.695000],
-      zoom: 12
-    });
 
-    const tiles = L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}@2x.png?key='+this.mapApiKey, {
-      tileSize: 512,
-      zoomOffset: -1,
-      maxZoom: 18,
-      minZoom: 3,
-      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-    });
+  public tiles = L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}@2x.png?key='+this.mapApiKey, {
+    tileSize: 512,
+    zoomOffset: -1,
+    maxZoom: 18,
+    minZoom: 3,
+    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+  });
 
-    tiles.addTo(this.map);
+  private async populateSelectList(): Promise<void> {
+    this.shapes = await this.requestService.get('/api/shapeNames').toPromise();
+  }
 
-    this.coords = await this.requestService.get('/api/shape/shp-110-52').toPromise();
+  public async plotShape(shape: string): Promise<void> {
+    // following line does not work
+    await this.mapLayer.remove();
+    this.coords = await this.requestService.get('/api/shape/'+shape).toPromise();
 
-    console.log(this.coords)
-
-    var geojsonFeature: geojson.Feature = ({
+    this.geojsonFeature = ({
         "type": "Feature",
         "properties": {
             "name": "Coors Field",
@@ -47,23 +48,27 @@ export class RouteInfoComponent implements AfterViewInit {
         }
     });
 
-    console.log(geojsonFeature);
+    this.mapLayer = L.geoJSON(this.geojsonFeature);
+    this.mapLayer.addTo(this.map);
+    this.map.fitBounds(this.mapLayer.getBounds());
+  }
 
-    function onEachFeature(feature: any, layer: any) {
-        // does this feature have a property named popupContent?
-        if (feature.properties && feature.properties.popupContent) {
-            layer.bindPopup(feature.properties.popupContent);
-        }
-    }
+  public initMap(): void {
+    this.map = L.map('map', {
+      center: [45.424721, -75.695000],
+      zoom: 12,
 
-    L.geoJSON(geojsonFeature, {
-      onEachFeature: onEachFeature
-    }).addTo(this.map);
+    });
 
+    this.tiles.addTo(this.map);
+  }
 
+  async ngOnInit(): Promise<void> {
+    await this.populateSelectList();
+    this.initMap();
   }
 
   ngAfterViewInit(): void {
-    this.initMap()
+
   }
 }

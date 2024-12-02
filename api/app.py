@@ -25,6 +25,15 @@ def getShape(shape_id):
 		returnShapes.append([seg['shape_pt_lon'],seg['shape_pt_lat']])
 	return returnShapes
 
+@app.route("/api/shapeNames")
+def getShapeNames():
+	shapesQuery = fauna.paginate(fql('shapes.all() { shape_id }'))
+	shapes = []
+	for page in shapesQuery:
+		for doc in page:
+			shapes.append(doc['shape_id'])
+	return shapes
+
 
 # @app.route("/api/getShapes")
 # def getShapes():

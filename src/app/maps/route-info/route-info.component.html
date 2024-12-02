@@ -2,6 +2,12 @@
 <p>route-info works!</p>
 <div class="map-container">
   <div class="map-frame mx-auto">
+    <form class="mb-3">
+      <select #selectShape (change)="plotShape(selectShape.value)" class="form-select" aria-label="Default select example">
+        <option selected>Open this select menu</option>
+        <option *ngFor="let entry of this.shapes" [value]="entry">{{entry}}</option>
+      </select>
+    </form>
     <div id="map"></div>
   </div>
 </div>
