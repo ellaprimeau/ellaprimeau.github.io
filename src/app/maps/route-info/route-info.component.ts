@@ -14,7 +14,10 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   public shapes: any;
   private coords : any;
   public map : any;
+  public trips: any;
+  public tripGroups: any[] = [[],[],[]];
   public mapLayer = L.geoJSON(null);
+  public disabled = false;
   private geojsonFeature : any;
   private mapApiKey = import.meta.env.NG_APP_MAP_API_KEY;
 
@@ -31,17 +34,25 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   }
 
   public async plotShape(shape: string): Promise<void> {
-    // following line does not work
-    await this.mapLayer.remove();
+    this.disabled = true
+    // this.trip = "test";
+    this.mapLayer.remove();
+    this.trips = await this.requestService.get('/api/trip/'+shape).toPromise();
+    this.tripGroups = [[],[],[]];
+
+    for(let i = 0; i < this.trips.length; i++) {
+      if(this.trips[i][0]=="Weekday"){
+        this.tripGroups[0].push(this.trips[i]);
+      } else if(this.trips[i][0]=="Saturday") {
+        this.tripGroups[1].push(this.trips[i]);
+      } else {
+        this.tripGroups[2].push(this.trips[i]);        
+      }
+    }
     this.coords = await this.requestService.get('/api/shape/'+shape).toPromise();
 
     this.geojsonFeature = ({
         "type": "Feature",
-        "properties": {
-            "name": "Coors Field",
-            "amenity": "Baseball Stadium",
-            "popupContent": "This is where the Rockies play!"
-        },
         "geometry": {
             "type": "LineString",
             "coordinates": this.coords
@@ -51,6 +62,7 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
     this.mapLayer = L.geoJSON(this.geojsonFeature);
     this.mapLayer.addTo(this.map);
     this.map.fitBounds(this.mapLayer.getBounds());
+    this.disabled=false;
   }
 
   public initMap(): void {

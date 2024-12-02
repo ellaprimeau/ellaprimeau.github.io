@@ -1,4 +1,4 @@
-import csv
+import csv, json, os
 
 class Shapes:
 	def __init__(self, filepath):
@@ -16,3 +16,15 @@ class Shapes:
 
 	def get(self, id):
 		return self.data[id]
+
+	def jsonDump(self):
+		for key in self.data.keys():
+			with open('api/gtfs/{}.json'.format(key), 'w+') as f:
+				json.dump({'shape_id': key, 'shape': self.data[key]}, f)
+				f.close()
+		print('json dump complete')
+
+
+if __name__ == "__main__":
+	localShapes = Shapes('api/gtfs/shapes.txt')
+	localShapes.jsonDump()

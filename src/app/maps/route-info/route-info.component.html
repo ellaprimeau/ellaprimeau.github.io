@@ -3,11 +3,22 @@
 <div class="map-container">
   <div class="map-frame mx-auto">
     <form class="mb-3">
-      <select #selectShape (change)="plotShape(selectShape.value)" class="form-select" aria-label="Default select example">
+      <select #selectShape [disabled]=this.disabled (change)="plotShape(selectShape.value)" class="form-select" aria-label="Default select example">
         <option selected>Open this select menu</option>
         <option *ngFor="let entry of this.shapes" [value]="entry">{{entry}}</option>
       </select>
     </form>
     <div id="map"></div>
+    <div class="row">
+      <div class="col-4">
+        <div *ngFor="let entry of this.tripGroups[0]">{{ entry }}</div>
+      </div>
+      <div class="col-4">
+        <div *ngFor="let entry of this.tripGroups[1]">{{ entry }}</div>
+      </div>
+      <div class="col-4">
+        <div *ngFor="let entry of this.tripGroups[2]">{{ entry }}</div>
+      </div>
+    </div>
   </div>
 </div>
