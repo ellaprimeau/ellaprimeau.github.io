@@ -11,13 +11,15 @@ import * as geojson from 'geojson';
 export class RouteInfoComponent implements AfterViewInit, OnInit {
   constructor(public requestService: RequestService) {}
 
-  public shapes: any;
+  public routes: any;
   private coords : any;
   public map : any;
   public trips: any;
   public tripGroups: any[] = [[],[],[]];
+  public shapes: any[] = [];
   public mapLayer = L.geoJSON(null);
   public disabled = false;
+  public colorIndex: number = 0;
   private geojsonFeature : any;
   private mapApiKey = import.meta.env.NG_APP_MAP_API_KEY;
 
@@ -29,15 +31,22 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
     attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
   });
 
-  private async populateSelectList(): Promise<void> {
-    this.shapes = await this.requestService.get('/api/shapeNames').toPromise();
+  public async populateShapes(route_id: any): Promise<void> {
+    this.removeShapes()
+    this.shapes = await this.requestService.get('/api/shapes/'+route_id).toPromise();
   }
 
-  public async plotShape(shape: string): Promise<void> {
+  public removeShapes(): void {
+    this.map.remove();
+    this.colorIndex = 0;
+    this.initMap();
+  }
+
+  public async plotShape(shape: string, color: string): Promise<void> {
+    // this.mapLayer.remove();
     this.disabled = true
     // this.trip = "test";
-    this.mapLayer.remove();
-    this.trips = await this.requestService.get('/api/trip/'+shape).toPromise();
+    this.trips = await this.requestService.get('/api/stop_times/byShape/'+shape).toPromise();
     this.tripGroups = [[],[],[]];
 
     for(let i = 0; i < this.trips.length; i++) {
@@ -56,11 +65,13 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
         "geometry": {
             "type": "LineString",
             "coordinates": this.coords
-        }
+        },
     });
 
     this.mapLayer = L.geoJSON(this.geojsonFeature);
     this.mapLayer.addTo(this.map);
+    this.mapLayer.setStyle(()=>({ color: color, opacity: 0.8, weight: 5 }));
+    this.colorIndex++; 
     this.map.fitBounds(this.mapLayer.getBounds());
     this.disabled=false;
   }
@@ -76,7 +87,7 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.populateSelectList();
+    this.routes = await this.requestService.get('/api/getRoutes').toPromise();
     this.initMap();
   }
 
