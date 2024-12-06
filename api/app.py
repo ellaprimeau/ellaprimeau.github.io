@@ -13,6 +13,12 @@ faunaKey = os.environ.get('FAUNA_ADMIN_KEY')
 localShapes = {}
 fauna = Client(secret=faunaKey)
 
+services = {
+	'H01S924S-Semaine-4-_24AUT-1111100-':'Weekday',
+	'H01S024A-Dimanche-4-_24AUT-0000001-':'Saturday',
+	'H01S024I-Dimanche-4-_24AUT-0000001-':'Sunday'
+}
+
 @app.route("/api/")
 def hello_world():
 	return("<p>hello world</p>")
@@ -27,7 +33,7 @@ def getShape(shape_id):
 
 @app.route("/api/shapes/<route_id>")
 def getShapesByRouteId(route_id):
-	shapesQuery = fauna.paginate(fql('trips.route_id("{}") {{ shape_id, trip_headsign }}'.format(route_id)))
+	shapesQuery = fauna.paginate(fql('trips.route_id("{}") {{ shape_id, trip_headsign, service_id }}'.format(route_id)))
 	shapes = []
 	shapeIds = []
 	colors = ['#F25DC5','#F2D45D','#5DF28A','#5D7AF2']
@@ -38,12 +44,17 @@ def getShapesByRouteId(route_id):
 				shapes.append({
 					'shape_id': doc['shape_id'],
 					'color': colors[i%len(colors)],
-					'shape_headsign': doc['trip_headsign']
+					'shape_headsign': doc['trip_headsign'],
+					'tripCount': 0
 				})
 				shapeIds.append(doc['shape_id'])
 				i+=1
-	return shapes
-	# return sorted(shapes, key=lambda i: i['shape_id'])
+			elif doc['service_id'] in services:
+				for shape in shapes:
+					if shape['shape_id']==doc['shape_id']:
+						shape['tripCount']+=1
+	# return shapes
+	return sorted(shapes, key=lambda i: i['tripCount'])[::-1]
 
 @app.route("/api/getRoutes")
 def getRoutes():
@@ -70,11 +81,6 @@ def getStopTimesByShape(shape_id):
 		  'stop_times': stop_times.trip_id(item.trip_id).first()}})
 	""".format(shape_id)))
 	stopTimes = []
-	services = {
-		'H01S924S-Semaine-4-_24AUT-1111100-':'Weekday',
-		'H01S024A-Dimanche-4-_24AUT-0000001-':'Saturday',
-		'H01S024I-Dimanche-4-_24AUT-0000001-':'Sunday'
-	}
 	for page in stopTimesQuery:
 		for doc in page:
 			if doc['service_id'] in services:

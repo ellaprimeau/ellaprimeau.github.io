@@ -9,7 +9,7 @@
       </select>
       <div class="row mt-3 mb-3">
         <div class="col-2 mb-2" *ngFor="let entry of this.shapes">
-          <button type=button class="btn w-100 h-100 mb-3" [ngStyle]="{'background-color': entry['color']}" (click)="plotShape(entry['shape_id'], entry['color'])">{{entry['shape_id']}}<br> {{entry['shape_headsign']}}</button>
+          <button type=button class="btn w-100 h-100 mb-3" [ngStyle]="{'background-color': entry['color']}" (click)="plotShape(entry['shape_id'], entry['color'])">{{entry['shape_id']}}<br>{{entry['shape_headsign']}}<br>{{entry['tripCount']}}</button>
         </div>
           <button type=button class="btn btn-primary w-100 h-100 mb-3" (click)="removeShapes()">Clear</button>
       </div>
