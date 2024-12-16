@@ -32,21 +32,11 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   });
 
   public async populateShapes(route_id: any): Promise<void> {
-    this.removeShapes()
-    this.shapes = await this.requestService.get('/api/shapes/'+route_id).toPromise();
-  }
-
-  public removeShapes(): void {
-    this.map.remove();
-    this.colorIndex = 0;
-    this.initMap();
-  }
-
-  public async plotShape(shape: string, color: string): Promise<void> {
-    // this.mapLayer.remove();
-    this.disabled = true
-    // this.trip = "test";
-    this.trips = await this.requestService.get('/api/stop_times/byShape/'+shape).toPromise();
+    const start = new Date().getTime();
+    this.removeShapes();
+    [this.shapes, this.trips] = await Promise.all([
+      this.requestService.get('/api/shapes/'+route_id).toPromise(),
+      this.requestService.get('/api/stop_times/byRoute/'+route_id).toPromise()]);
     this.tripGroups = [[],[],[]];
 
     for(let i = 0; i < this.trips.length; i++) {
@@ -58,7 +48,35 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
         this.tripGroups[2].push(this.trips[i]);        
       }
     }
-    this.coords = await this.requestService.get('/api/shape/'+shape).toPromise();
+    let elapsed = new Date().getTime() - start;
+    console.log(elapsed)
+  }
+
+  public removeShapes(): void {
+    this.map.remove();
+    this.colorIndex = 0;
+    this.initMap();
+  }
+
+  public async plotShape(shape: string, color: string): Promise<void> {
+    // this.mapLayer.remove();
+    const start = new Date().getTime();
+    this.disabled = true;
+    [this.trips, this.coords] = await Promise.all([
+      this.requestService.get('/api/stop_times/byShape/'+shape).toPromise(),
+      this.requestService.get('/api/shape/'+shape).toPromise()]);
+
+    this.tripGroups = [[],[],[]];
+
+    for(let i = 0; i < this.trips.length; i++) {
+      if(this.trips[i][0]=="Weekday"){
+        this.tripGroups[0].push(this.trips[i]);
+      } else if(this.trips[i][0]=="Saturday") {
+        this.tripGroups[1].push(this.trips[i]);
+      } else {
+        this.tripGroups[2].push(this.trips[i]);        
+      }
+    }
 
     this.geojsonFeature = ({
         "type": "Feature",
@@ -74,6 +92,8 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
     this.colorIndex++; 
     this.map.fitBounds(this.mapLayer.getBounds());
     this.disabled=false;
+    let elapsed = new Date().getTime() - start;
+    console.log(elapsed)
   }
 
   public initMap(): void {

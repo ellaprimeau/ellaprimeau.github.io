@@ -19,6 +19,15 @@ services = {
 	'H01S024I-Dimanche-4-_24AUT-0000001-':'Sunday'
 }
 
+servicesAR = [
+	'H01S924S-Semaine-4-_24AUT-1111100-',
+	'H01S024A-Dimanche-4-_24AUT-0000001-',
+	'H01S024I-Dimanche-4-_24AUT-0000001-'
+]
+
+
+cachedStopTimes = []
+
 @app.route("/api/")
 def hello_world():
 	return("<p>hello world</p>")
@@ -78,33 +87,43 @@ def getStopTimesByShape(shape_id):
 		  'route_id': item.route_id,
 		  'trip_headsign': item.trip_headsign,
 		  'service_id': item.service_id,
-		  'stop_times': stop_times.trip_id(item.trip_id).first()}})
+		  'stop_times': stop_times.trip_id(item.trip_id).first()?.stopTimes.first()}})
 	""".format(shape_id)))
 	stopTimes = []
 	for page in stopTimesQuery:
 		for doc in page:
 			if doc['service_id'] in services:
-				stopTimes.append([services[doc['service_id']],doc['route_id'],doc['trip_headsign'],doc['stop_times']['stopTimes'][0]['departure_time']])
+				stopTimes.append([services[doc['service_id']],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
 
 	return sorted(stopTimes, key=lambda i: int(i[-1][:2]))
+
+@app.route("/api/stop_times/byRoute/<route_id>")
+def getStopTimesByRoute(route_id):
+	cachedStopTimes = []
+	stopTimesQuery = fauna.paginate(fql("""
+		let tripList = trips.route_id('{}').toSet() {{ trip_id, route_id, trip_headsign, service_id }}
+
+		tripList.map(item => {{
+		  'route_id': item.route_id,
+		  'trip_headsign': item.trip_headsign,
+		  'service_id': item.service_id,
+		  'stop_times': stop_times.trip_id(item.trip_id).first()?.stopTimes.first()}})
+	""".format(route_id)))
+	stopTimes = []
+	for page in stopTimesQuery:
+		for doc in page:
+			if doc['service_id'] in services:
+				cachedStopTimes.append(doc)
+				stopTimes.append([services[doc['service_id']],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+
+	return sorted(stopTimes, key=lambda i: int(i[-1].replace(':','')))
 
 
 @app.route("/api/stop_times/<trip_id>")
 def getStopTimes(trip_id):
-	stopTimesQuery = fauna.paginate(fql('stop_times.trip_id("{}")'.format(trip_id)))
+	stopTimesQuery = fauna.paginate(fql('stop_times.trip_id("{}"").first()?.stopTimes.first()'.format(trip_id)))
 	stopTimes = []
 	for page in stopTimesQuery:
 		for doc in page:
 			stopTimes.append(doc['stopTimes'])
 	return stopTimes
-
-# @app.route("/api/getShapes")
-# def getShapes():
-	# if localShapes == {}:
-		# s = requests.get('https://media.githubusercontent.com/media/ellaprimeau/GTFS/refs/heads/main/shapes.txt', stream=True).text
-		# with open('./gtfs/shapes.txt', 'w+') as f:
-			# f.write(s)
-		# localShapes = Shapes('./gtfs/shapes.txt')
-		# return localShapes.get('shp-10-03')
-	# else:
-		# return

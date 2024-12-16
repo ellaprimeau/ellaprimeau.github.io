@@ -2,16 +2,18 @@
 <p>route-info works!</p>
 <div class="map-container">
   <div class="map-frame mx-auto">
-    <form class="mb-3">
-      <select #selectRoute [disabled]=this.disabled (change)="populateShapes(selectRoute.value)" class="form-select mb-1" aria-label="Default select example">
+    <form class="mb-2">
+      <select #selectRoute [disabled]=this.disabled (change)="populateShapes(selectRoute.value)" class="form-select mb-2" aria-label="Default select example">
         <option selected>Open this select menu</option>
         <option *ngFor="let entry of this.routes" [value]="entry['route_id']">{{entry['str']}}</option>
       </select>
-      <div class="row mt-3 mb-3">
+      <div class="row">
         <div class="col-2 mb-2" *ngFor="let entry of this.shapes">
           <button type=button class="btn w-100 h-100 mb-3" [ngStyle]="{'background-color': entry['color']}" (click)="plotShape(entry['shape_id'], entry['color'])">{{entry['shape_id']}}<br>{{entry['shape_headsign']}}<br>{{entry['tripCount']}}</button>
         </div>
-          <button type=button class="btn btn-primary w-100 h-100 mb-3" (click)="removeShapes()">Clear</button>
+      </div>
+      <div class="col-2">
+        <button type=button class="btn btn-primary w-100 h-100 col-2" (click)="removeShapes()">Clear</button>
       </div>
       <!-- <select #selectShape [disabled]=this.disabled (change)="plotShape(selectShape.value)" class="form-select" aria-label="Default select example"> -->
         <!-- <option selected>Open this select menu</option> -->
