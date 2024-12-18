@@ -18,10 +18,16 @@ class Shapes:
 		return self.data[id]
 
 	def jsonDump(self):
+		itemList = []
 		for key in self.data.keys():
-			with open('api/gtfs/{}.json'.format(key), 'w+') as f:
-				json.dump({'shape_id': key, 'shape': self.data[key]}, f)
-				f.close()
+			newItem = {
+				'shape_id': key,
+				'shape': self.data[key]
+			}
+			itemList.append(newItem)
+		with open('api/gtfs/shapes.json', 'w+') as f:
+			json.dump(itemList, f, indent=4)
+			f.close()
 		print('json dump complete')
 
 

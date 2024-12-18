@@ -26,7 +26,7 @@ class StopTimes:
 			}
 			itemList.append(newItem)
 		with open('api/gtfs/stop_times.json', 'w+') as f:
-			json.dump(itemList, f)
+			json.dump(itemList, f, indent=4)
 			f.close()
 
 if __name__ == "__main__":

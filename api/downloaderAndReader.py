@@ -1,6 +1,9 @@
-import requests, io
+import requests, io, os
 from zipfile import ZipFile
 
-r = requests.get('https://oct-gtfs-emasagcnfmcgeham.z01.azurefd.net/public-access/GTFSExport.zip')
-z = ZipFile(io.BytesIO(r.content))
-z.extractall('./GTFS/')
+r = requests.get('https://contenu.sto.ca/GTFS/GTFS.zip')
+
+with ZipFile(io.BytesIO(r.content)) as z:
+	wd = os.path.dirname(__file__)
+	z.extractall(wd+'\\gtfs')
+	z.close()

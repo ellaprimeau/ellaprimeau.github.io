@@ -31,12 +31,21 @@ class Trips:
 		return returnList
 
 	def jsonDump(self):
-		with open('api/gtfs/tripsDump.json', 'w+') as f:
-			json.dump(self.data, f)
+		itemList = []
+		for key in self.data.keys():
+			# The | combines the two into 1 dict with
+			# specific order of keys eg:
+			# {these keys first} | {then these keys}
+			# to ensure databaseKey is first
+			newItem = {'trip_id': key} | self.data[key]
+			itemList.append(newItem)
+
+		with open('api/gtfs/trips.json', 'w+') as f:
+			json.dump(itemList, f, indent=4)
 			f.close()
 		print('json dump complete')
 
 if __name__ == "__main__":
 	localTrips = Trips('api/gtfs/trips.txt')
 	print(len(localTrips.data.keys()))
-	# localTrips.jsonDump()
+	localTrips.jsonDump()
