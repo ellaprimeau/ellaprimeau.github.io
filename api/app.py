@@ -97,7 +97,7 @@ def getStopTimesByShape(shape_id):
 
 @app.route("/api/stop_times/byRoute/<route_id>")
 def getStopTimesByRoute(route_id):
-	cachedStopTimes = []
+	# cachedStopTimes = []
 	stopTimesQuery = fauna.paginate(fql("""
 		let tripList = trips.route_id('{}').toSet() {{ trip_id, route_id, trip_headsign, service_id }}
 
@@ -107,14 +107,16 @@ def getStopTimesByRoute(route_id):
 		  'service_id': item.service_id,
 		  'stop_times': stop_times.trip_id(item.trip_id).first()?.stopTimes.first()}})
 	""".format(route_id)))
-	stopTimes = []
+	stopTimes = {}
 	for page in stopTimesQuery:
 		for doc in page:
-			# if doc['service_id'] in services:
-			cachedStopTimes.append(doc)
-			stopTimes.append([doc['service_id'],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+			if doc['service_id'] in stopTimes.keys():
+				stopTimes[doc['service_id']].append([doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+			else:
+				stopTimes[doc['service_id']] = [[doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']]]
 
-	return sorted(stopTimes, key=lambda i: int(i[-1].replace(':','')))
+	# return sorted(stopTimes, key=lambda i: int(i[-1].replace(':','')))
+	return stopTimes
 
 
 @app.route("/api/stop_times/<trip_id>")

@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { RequestService } from '../../request.service';
+import {KeyValue} from '@angular/common'
 import * as L from 'leaflet';
 import 'leaflet-arrowheads';
 import * as geojson from 'geojson';
@@ -38,17 +39,7 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
     [this.shapes, this.trips] = await Promise.all([
       this.requestService.get('/api/shapes/'+route_id).toPromise(),
       this.requestService.get('/api/stop_times/byRoute/'+route_id).toPromise()]);
-    this.tripGroups = [[],[],[]];
 
-    for(let i = 0; i < this.trips.length; i++) {
-      if(this.trips[i][0]=="Weekday"){
-        this.tripGroups[0].push(this.trips[i]);
-      } else if(this.trips[i][0]=="Saturday") {
-        this.tripGroups[1].push(this.trips[i]);
-      } else {
-        this.tripGroups[2].push(this.trips[i]);        
-      }
-    }
     let elapsed = new Date().getTime() - start;
     console.log(elapsed)
   }
