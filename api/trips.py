@@ -4,7 +4,18 @@ class Trips:
 	def __init__(self, filepath):
 		self.data = {}
 		with open(filepath, 'r',encoding='utf-8') as f:
-			reader = csv.DictReader(f, delimiter=',')
+			reader = csv.DictReader(f, fieldnames=[
+				'route_id',
+				'service_id',
+				'trip_id',
+				'trip_headsign',
+				'shape_id',
+				'block_id'], delimiter=',')
+
+			# Since fieldnames were specified,
+			# reader starts on header line. This line
+			# skips it and moves to the data 
+			next(reader)
 			for row in reader:
 				key = row['trip_id']
 				row.pop('trip_id')

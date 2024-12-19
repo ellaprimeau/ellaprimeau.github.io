@@ -8,29 +8,25 @@ from fauna.client import Client
 
 app = Flask(__name__)
 faunaDomain = os.environ.get('FAUNA_DB_DOMAIN')
-faunaKey = os.environ.get('FAUNA_ADMIN_KEY')
+faunaKey = str(os.environ.get('FAUNA_ADMIN_KEY'))+":sto:admin"
 
 localShapes = {}
 fauna = Client(secret=faunaKey)
 
-services = {
-	'H01S924S-Semaine-4-_24AUT-1111100-':'Weekday',
-	'H01S024A-Dimanche-4-_24AUT-0000001-':'Saturday',
-	'H01S024I-Dimanche-4-_24AUT-0000001-':'Sunday'
-}
+# services = {
+# 	'H01S924S-Semaine-4-_24AUT-1111100-':'Weekday',
+# 	'H01S024A-Dimanche-4-_24AUT-0000001-':'Saturday',
+# 	'H01S024I-Dimanche-4-_24AUT-0000001-':'Sunday'
+# }
 
-servicesAR = [
-	'H01S924S-Semaine-4-_24AUT-1111100-',
-	'H01S024A-Dimanche-4-_24AUT-0000001-',
-	'H01S024I-Dimanche-4-_24AUT-0000001-'
-]
+# servicesAR = [
+# 	'H01S924S-Semaine-4-_24AUT-1111100-',
+# 	'H01S024A-Dimanche-4-_24AUT-0000001-',
+# 	'H01S024I-Dimanche-4-_24AUT-0000001-'
+# ]
 
 
 cachedStopTimes = []
-
-@app.route("/api/")
-def hello_world():
-	return("<p>hello world</p>")
 
 @app.route("/api/shape/<shape_id>")
 def getShape(shape_id):
@@ -58,25 +54,27 @@ def getShapesByRouteId(route_id):
 				})
 				shapeIds.append(doc['shape_id'])
 				i+=1
-			elif doc['service_id'] in services:
-				for shape in shapes:
-					if shape['shape_id']==doc['shape_id']:
-						shape['tripCount']+=1
+			# elif doc['service_id'] in services:
+			for shape in shapes:
+				if shape['shape_id']==doc['shape_id']:
+					shape['tripCount']+=1
 	# return shapes
 	return sorted(shapes, key=lambda i: i['tripCount'])[::-1]
 
 @app.route("/api/getRoutes")
 def getRoutes():
-	routesQuery = fauna.paginate(fql('routes.all() { route_id, route_long_name}'))
+	routesQuery = fauna.paginate(fql('routes.all() { route_id, route_short_name, route_long_name}'))
 	routes = []
 	for page in routesQuery:
 		for doc in page:
 			routes.append({
-				'route_id': int(doc['route_id']),
+				# INT CONVERSION WILL CAUSE PROBLEMS
+				'route_id': doc['route_id'],
+				'route_short_name': doc['route_short_name'],
 				'route_long_name': doc['route_long_name'],
-				'str': '{} {}'.format(doc['route_id'], doc['route_long_name'])
+				'str': '{} {}'.format(doc['route_short_name'], doc['route_long_name'])
 				})
-	return sorted(routes, key=lambda i: i['route_id'])
+	return sorted(routes, key=lambda i: int(i['route_short_name']))
 
 @app.route("/api/stop_times/byShape/<shape_id>")
 def getStopTimesByShape(shape_id):
@@ -92,8 +90,8 @@ def getStopTimesByShape(shape_id):
 	stopTimes = []
 	for page in stopTimesQuery:
 		for doc in page:
-			if doc['service_id'] in services:
-				stopTimes.append([services[doc['service_id']],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+			# if doc['service_id'] in services:
+			stopTimes.append([doc['service_id'],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
 
 	return sorted(stopTimes, key=lambda i: int(i[-1][:2]))
 
@@ -112,9 +110,9 @@ def getStopTimesByRoute(route_id):
 	stopTimes = []
 	for page in stopTimesQuery:
 		for doc in page:
-			if doc['service_id'] in services:
-				cachedStopTimes.append(doc)
-				stopTimes.append([services[doc['service_id']],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+			# if doc['service_id'] in services:
+			cachedStopTimes.append(doc)
+			stopTimes.append([doc['service_id'],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
 
 	return sorted(stopTimes, key=lambda i: int(i[-1].replace(':','')))
 

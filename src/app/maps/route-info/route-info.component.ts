@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { RequestService } from '../../request.service';
 import * as L from 'leaflet';
+import 'leaflet-arrowheads';
 import * as geojson from 'geojson';
 
 @Component({
@@ -78,15 +79,23 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
       }
     }
 
-    this.geojsonFeature = ({
+    this.geojsonFeature = {
         "type": "Feature",
         "geometry": {
             "type": "LineString",
             "coordinates": this.coords
         },
-    });
+    };
 
-    this.mapLayer = L.geoJSON(this.geojsonFeature);
+    // @ts-ignore
+    this.mapLayer = L.geoJSON(this.geojsonFeature, { arrowheads:{
+      size: '14px',
+      frequency: '300px',
+      yawn: 40,
+      fill: true,
+      offsets: {start:'100m',end:'100m'}
+    }});
+
     this.mapLayer.addTo(this.map);
     this.mapLayer.setStyle(()=>({ color: color, opacity: 0.8, weight: 5 }));
     this.colorIndex++; 
