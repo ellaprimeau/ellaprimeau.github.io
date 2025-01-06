@@ -3,6 +3,7 @@ import json, random
 # from shapes import Shapes
 import requests
 import os
+import datetime
 from fauna import fql
 from fauna.client import Client
 
@@ -68,13 +69,21 @@ def getRoutes():
 	for page in routesQuery:
 		for doc in page:
 			routes.append({
-				# INT CONVERSION WILL CAUSE PROBLEMS
 				'route_id': doc['route_id'],
 				'route_short_name': doc['route_short_name'],
 				'route_long_name': doc['route_long_name'],
 				'str': '{} {}'.format(doc['route_short_name'], doc['route_long_name'])
 				})
-	return sorted(routes, key=lambda i: int(i['route_short_name']))
+
+	try:
+		return sorted(routes, key=lambda i: int(i['route_short_name']))
+
+	except:
+		try:
+			return sorted(routes, key=lambda i: int(i['route_short_name']))
+
+		except:
+			return routes
 
 @app.route("/api/stop_times/byShape/<shape_id>")
 def getStopTimesByShape(shape_id):
@@ -87,13 +96,17 @@ def getStopTimesByShape(shape_id):
 		  'service_id': item.service_id,
 		  'stop_times': stop_times.trip_id(item.trip_id).first()?.stopTimes.first()}})
 	""".format(shape_id)))
-	stopTimes = []
+	stopTimes = {}
 	for page in stopTimesQuery:
 		for doc in page:
-			# if doc['service_id'] in services:
-			stopTimes.append([doc['service_id'],doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+			if doc['service_id'] in stopTimes.keys():
+				stopTimes[doc['service_id']].append([doc['trip_headsign'],doc['stop_times']['departure_time']])
+			else:
+				stopTimes[doc['service_id']] = [[doc['trip_headsign'],doc['stop_times']['departure_time']]]
 
-	return sorted(stopTimes, key=lambda i: int(i[-1][:2]))
+	for service in stopTimes.keys():
+		stopTimes[service] = sorted(stopTimes[service], key=lambda i: int(i[-1].replace(':','')))
+	return stopTimes
 
 @app.route("/api/stop_times/byRoute/<route_id>")
 def getStopTimesByRoute(route_id):
@@ -111,10 +124,12 @@ def getStopTimesByRoute(route_id):
 	for page in stopTimesQuery:
 		for doc in page:
 			if doc['service_id'] in stopTimes.keys():
-				stopTimes[doc['service_id']].append([doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']])
+				stopTimes[doc['service_id']].append([doc['trip_headsign'],doc['stop_times']['departure_time']])
 			else:
-				stopTimes[doc['service_id']] = [[doc['route_id'],doc['trip_headsign'],doc['stop_times']['departure_time']]]
+				stopTimes[doc['service_id']] = [[doc['trip_headsign'],doc['stop_times']['departure_time']]]
 
+	for service in stopTimes.keys():
+		stopTimes[service] = sorted(stopTimes[service], key=lambda i: int(i[-1].replace(':','')))
 	# return sorted(stopTimes, key=lambda i: int(i[-1].replace(':','')))
 	return stopTimes
 
@@ -127,3 +142,23 @@ def getStopTimes(trip_id):
 		for doc in page:
 			stopTimes.append(doc['stopTimes'])
 	return stopTimes
+
+@app.route("/api/services")
+def getServices():
+	servicesQuery = fauna.paginate(fql('services.all()'))
+	services = []
+	for page in servicesQuery:
+		for doc in page:
+			for date in doc['dates']:
+				dateF = datetime.date(
+						int(date['date'][:4]),
+						int(date['date'][4:6]),
+						int(date['date'][6:]))
+
+				services.append({
+					'date': date['date'],
+					'dateFormatted': dateF.strftime("%b %d %Y"),
+					'weekday': dateF.strftime("%w"),
+					'service_id': doc['service_id'],
+				})
+	return sorted(services, key=lambda i: i['date'])

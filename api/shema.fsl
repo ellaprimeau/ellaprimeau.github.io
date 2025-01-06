@@ -1,0 +1,26 @@
+collection routes {
+}
+
+collection services {
+}
+
+collection shapes {
+  index shape_id {
+    terms [.shape_id]
+  }
+}
+
+collection stop_times {
+  index trip_id {
+    terms [.trip_id]
+  }
+}
+
+collection trips {
+  index route_id {
+    terms [.route_id]
+  }
+  index shape_id {
+    terms [.shape_id]
+  }
+}

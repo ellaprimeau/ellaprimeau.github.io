@@ -14,6 +14,7 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   constructor(public requestService: RequestService) {}
 
   public routes: any;
+  public services: any;
   private coords : any;
   public map : any;
   public trips: any;
@@ -58,17 +59,17 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
       this.requestService.get('/api/stop_times/byShape/'+shape).toPromise(),
       this.requestService.get('/api/shape/'+shape).toPromise()]);
 
-    this.tripGroups = [[],[],[]];
+    // this.tripGroups = [[],[],[],[],[],[],[]];
 
-    for(let i = 0; i < this.trips.length; i++) {
-      if(this.trips[i][0]=="Weekday"){
-        this.tripGroups[0].push(this.trips[i]);
-      } else if(this.trips[i][0]=="Saturday") {
-        this.tripGroups[1].push(this.trips[i]);
-      } else {
-        this.tripGroups[2].push(this.trips[i]);        
-      }
-    }
+    // for(let i = 0; i < this.trips.length; i++) {
+    //   if(this.trips[i][0]=="Weekday"){
+    //     this.tripGroups[0].push(this.trips[i]);
+    //   } else if(this.trips[i][0]=="Saturday") {
+    //     this.tripGroups[1].push(this.trips[i]);
+    //   } else {
+    //     this.tripGroups[2].push(this.trips[i]);        
+    //   }
+    // }
 
     this.geojsonFeature = {
         "type": "Feature",
@@ -107,7 +108,11 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.routes = await this.requestService.get('/api/getRoutes').toPromise();
+    [this.routes, this.services] = await Promise.all([
+      this.requestService.get('/api/getRoutes').toPromise(),
+      this.requestService.get('/api/services').toPromise()
+    ]);
+
     this.initMap();
   }
 

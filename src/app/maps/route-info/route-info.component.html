@@ -25,11 +25,15 @@
     <div id="map"></div>
   </div>
 </div>
-<div class="container-fluid mt-5">
-  <div class="row">
-    <div *ngFor="let entry of this.trips| keyvalue" class="col mb-2">
-      {{ entry.key }}
-      <div *ngFor="let item of this.trips[entry.key]">{{ item.value }}</div>
+<div class="container-fluid mt-5 mx-auto">
+  <div class="row row-cols-7 mx-auto p-1">
+    <div *ngFor="let entry of this.services; let i=index" [ngClass]="{'bg-secondary': entry['weekday']==0 || entry['weekday']==6}" class="border border-primary col-2 mb-2">
+      {{ entry["dateFormatted"] }}
+      <div *ngFor="let item of this.trips | keyvalue">
+        <div *ngIf="item.key==entry['service_id']">
+          <div *ngFor="let line of $any(item).value">{{line}}</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

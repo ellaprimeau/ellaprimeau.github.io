@@ -5,13 +5,16 @@
 @import "../node_modules/bootstrap/scss/mixins";
 
 $primary: #eb34bd;
-// $body-bg: #e0b4da;
+$secondary: #e0b4da;
 // $body-color: #3b343a;
 
 
 $theme-colors: (
-	"primary": $primary
+	"primary": $primary,
+	"secondary": $secondary
 );
 
+$grid-columns: 14;
+$grid-row-columns: 7;
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
