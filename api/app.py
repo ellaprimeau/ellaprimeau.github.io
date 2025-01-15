@@ -9,7 +9,7 @@ from fauna.client import Client
 
 app = Flask(__name__)
 faunaDomain = os.environ.get('FAUNA_DB_DOMAIN')
-faunaKey = str(os.environ.get('FAUNA_ADMIN_KEY'))+":sto:admin"
+faunaKey = str(os.environ.get('FAUNA_ADMIN_KEY'))+":sto_new:admin"
 
 localShapes = {}
 fauna = Client(secret=faunaKey)

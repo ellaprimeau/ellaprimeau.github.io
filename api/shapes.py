@@ -4,17 +4,8 @@ class Shapes:
 	def __init__(self, filepath):
 		self.data = {}
 		with open(filepath, 'r') as f:
-			reader = csv.DictReader(f, fieldnames=[
-				'shape_id',
-				'shape_pt_lat',
-				'shape_pt_lon',
-				'shape_pt_sequence',
-				'shape_dist_traveled'], delimiter=',')
+			reader = csv.DictReader(f, delimiter=',')
 
-			# Since fieldnames were specified,
-			# reader starts on header line. This line
-			# skips it and moves to the data 
-			next(reader)
 			for row in reader:
 				key = row['shape_id']
 				row.pop('shape_id')

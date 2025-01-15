@@ -4,18 +4,8 @@ class Routes:
 	def __init__(self, filepath):
 		self.data = {}
 		with open(filepath, 'r') as f:
-			reader = csv.DictReader(f, fieldnames=[
-				'route_id',
-				'route_short_name',
-				'route_long_name',
-				'route_type',
-				'route_color',
-				'route_text_color'], delimiter=',')
+			reader = csv.DictReader(f, delimiter=',')
 			
-			# Since fieldnames were specified,
-			# reader starts on header line. This line
-			# skips it and moves to the data 
-			next(reader)
 			for row in reader:
 				key = row['route_id']
 				row.pop('route_id')

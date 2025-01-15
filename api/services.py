@@ -4,13 +4,8 @@ class Services:
 	def __init__(self, filepath):
 		self.data = {}
 		with open(filepath, 'r') as f:
-			reader = csv.DictReader(f, fieldnames=[
-				'service_id',
-				'date',
-				'exception_type'
-				], delimiter=',')
+			reader = csv.DictReader(f, delimiter=',')
 
-			next(reader)
 			for row in reader:
 				key = row['service_id']
 				row.pop('service_id')
