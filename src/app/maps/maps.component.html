@@ -1,2 +1,6 @@
 <app-map-bar></app-map-bar>
-<p>maps works!</p>
+<div *ngFor="let item of array">
+	<h1>{{item.title}}</h1>
+	{{item.description}}
+	<img class="w-50 mx-5" src="{{item.attachment[0].fields.file.url}}"><img>
+</div>

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { createClient } from 'contentful';
 import { from } from 'rxjs';
 // import { environment } from '../environments';
-import { TypeTextBoxFields } from './content-types';
-import { TypeTextBoxSkeleton } from './content-types';
+import { TypeMapPostFields } from './content-types';
+import { TypeMapPostSkeleton } from './content-types';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,9 @@ export class ContentService {
   getTextBoxes(query?: object){
     console.log(process.env.CONTENTFUL_ACCESS_TOKEN);
     return from(
-      this.client.getEntries<TypeTextBoxSkeleton>()
+      this.client.getEntries<TypeMapPostSkeleton>(Object.assign({
+        content_type: 'ellasitemapPost'
+      }, query))
     );
   }
 }

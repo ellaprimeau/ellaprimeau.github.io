@@ -11,19 +11,5 @@ import { RequestService } from '../request.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  textBox = ``;
-  text = '';
-  constructor(public contentService: ContentService, public requestService: RequestService) {}
 
-  ngOnInit(): void {
-    this.contentService.getTextBoxes().subscribe(textBoxes => {
-      textBoxes.items.forEach((element) => {
-        this.textBox = documentToHtmlString(element.fields.body);
-      })
-    })
-    this.requestService.get('/api/getShapes').subscribe(data => {
-      this.text = JSON.stringify(data);
-      console.log(data);
-    })
-  }
 }
