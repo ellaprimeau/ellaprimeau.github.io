@@ -5,7 +5,7 @@ import { HomeComponent } from './home/home.component';
 
 const routeConfig: Routes = [
   {path: 'maps', component: MapsComponent},
-  {path: 'maps/routeInfo', component: RouteInfoComponent},
+  // {path: 'maps/routeInfo', component: RouteInfoComponent},
   {path: 'home', component: HomeComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
 ];
