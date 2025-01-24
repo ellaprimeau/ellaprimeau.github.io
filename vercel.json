@@ -1,6 +1,6 @@
 {
   "framework": "angular",
-  "rewrites": [
+  // "rewrites": [
     // { "source": "/(.*)","destination": "/api/app.py"}
-  ]
+  // ]
 }
