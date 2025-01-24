@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule, provideRouter } from '@angular/router';
 import routeConfig from './routes';
@@ -9,6 +10,8 @@ import { HomeComponent } from './home/home.component';
 import { MapBarComponent } from './maps/map-bar/map-bar.component';
 import { RouteInfoComponent } from './maps/route-info/route-info.component';
 import { provideHttpClient } from '@angular/common/http';
+import { ToHtmlPipe } from './to-html.pipe';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -17,11 +20,13 @@ import { provideHttpClient } from '@angular/common/http';
     MapsComponent,
     HomeComponent,
     MapBarComponent,
-    RouteInfoComponent
+    RouteInfoComponent,
+    ToHtmlPipe
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routeConfig),
+    PdfViewerModule
   ],
   providers: [
     provideRouter(routeConfig),

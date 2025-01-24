@@ -1,6 +1,25 @@
 <app-map-bar></app-map-bar>
-<div *ngFor="let item of array">
-	<h1>{{item.title}}</h1>
-	{{item.description}}
-	<img class="w-50 mx-5" src="{{item.attachment[0].fields.file.url}}"><img>
+<div class="border border-primary rounded-5 col-10 mx-auto p-5 mb-5" *ngFor="let item of array">
+	<h1 class="mb-0">{{item.fields.title}}</h1>
+	<p style="font-size: .75rem;">
+		Created: {{item.sys.createdAt}} <br>
+		Updated: {{item.sys.updatedAt}}
+	</p>
+	<div>
+		<div [innerHtml]="item.fields.description | toHtml"></div>
+		<!-- <img class="img-fluid" src="{{item.fields.attachment[0].fields.file.url}}"><img> -->
+		<a 
+			href={{item.fields.attachment[0].fields.file.url}}
+			target="_blank" rel="noopener">
+			<pdf-viewer 
+				[src]="item.fields.attachment[0].fields.file.url"
+	            [render-text]="true"
+	            [render-text-mode]="0"
+	            [original-size]="false"
+	            [zoom-scale]="'page-fit'"
+	            class="mx-auto"
+	            style="width: 400px; height: 500px"
+			></pdf-viewer>
+		</a>
+	</div>
 </div>

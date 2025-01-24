@@ -1,5 +1,7 @@
 import {OnInit, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ToHtmlPipe } from './to-html.pipe';
+
 
 @Component({
   selector: 'app-root',

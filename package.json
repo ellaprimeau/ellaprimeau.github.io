@@ -33,6 +33,7 @@
     "leaflet-arrowheads": "^1.4.0",
     "leaflet-geometryutil": "^0.10.3",
     "leaflet-polylinedecorator": "^1.6.0",
+    "ng2-pdf-viewer": "^10.3.4",
     "node.js": "^0.0.1-security",
     "process": "^0.11.10",
     "rxjs": "~7.8.0",
