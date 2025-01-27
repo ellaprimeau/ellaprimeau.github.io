@@ -164,4 +164,4 @@ def getServices():
 					})
 		return sorted(services, key=lambda i: i['date'])
 	except exception as e:
-		print(repr(e))
+		return repr(e)
