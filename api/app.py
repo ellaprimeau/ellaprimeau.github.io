@@ -145,20 +145,23 @@ def getStopTimes(trip_id):
 
 @app.route("/api/services")
 def getServices():
-	servicesQuery = fauna.paginate(fql('services.all()'))
-	services = []
-	for page in servicesQuery:
-		for doc in page:
-			for date in doc['dates']:
-				dateF = datetime.date(
-						int(date['date'][:4]),
-						int(date['date'][4:6]),
-						int(date['date'][6:]))
+	try:
+		servicesQuery = fauna.paginate(fql('services.all()'))
+		services = []
+		for page in servicesQuery:
+			for doc in page:
+				for date in doc['dates']:
+					dateF = datetime.date(
+							int(date['date'][:4]),
+							int(date['date'][4:6]),
+							int(date['date'][6:]))
 
-				services.append({
-					'date': date['date'],
-					'dateFormatted': dateF.strftime("%b %d %Y"),
-					'weekday': dateF.strftime("%w"),
-					'service_id': doc['service_id'],
-				})
-	return sorted(services, key=lambda i: i['date'])
+					services.append({
+						'date': date['date'],
+						'dateFormatted': dateF.strftime("%b %d %Y"),
+						'weekday': dateF.strftime("%w"),
+						'service_id': doc['service_id'],
+					})
+		return sorted(services, key=lambda i: i['date'])
+	except exception as e:
+		print(repr(e))
