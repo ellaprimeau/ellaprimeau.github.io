@@ -143,7 +143,7 @@ def getStopTimes(trip_id):
 			stopTimes.append(doc['stopTimes'])
 	return stopTimes
 
-@app.route("/api/services")
+@app.route("/api/getServices")
 def getServices():
 	try:
 		servicesQuery = fauna.paginate(fql('services.all()'))

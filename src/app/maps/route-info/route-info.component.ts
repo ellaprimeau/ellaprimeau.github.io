@@ -38,7 +38,7 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
     const start = new Date().getTime();
     this.removeShapes();
     [this.shapes, this.trips] = await Promise.all([
-      this.requestService.get('/api/shapes/'+route_id).toPromise(),
+      this.requestService.get('/api/getShapes/'+route_id).toPromise(),
       this.requestService.get('/api/stop_times/byRoute/'+route_id).toPromise()]);
 
     let elapsed = new Date().getTime() - start;
@@ -110,7 +110,7 @@ export class RouteInfoComponent implements AfterViewInit, OnInit {
   async ngOnInit(): Promise<void> {
     [this.routes, this.services] = await Promise.all([
       this.requestService.get('/api/getRoutes').toPromise(),
-      this.requestService.get('/api/services').toPromise()
+      this.requestService.get('/api/getServices').toPromise()
     ]);
 
     this.initMap();
