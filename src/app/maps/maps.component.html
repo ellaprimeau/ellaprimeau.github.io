@@ -1,5 +1,5 @@
 <app-map-bar></app-map-bar>
-<div class="acrylic rounded-5 col-sm-10 mx-3 mx-sm-auto p-5 mb-5" *ngFor="let item of array">
+<div class="acrylic rounded-5 col-xl-6 col-sm-10 mx-3 mx-sm-auto p-5 mb-5" *ngFor="let item of array">
 	<h1 class="mb-0">{{item.fields.title}}</h1>
 	<p style="font-size: .75rem;">
 		<u><b>Created</b></u>: {{item.fields.creationDate | datePipe}} <br>
@@ -11,24 +11,15 @@
 		<pdf-viewer 
 			[src]="item.fields.attachment[0].fields.file.url"
             [render-text]="false"
-            [original-size]="false"
+            [original-size]="true"
             [zoom]=".9"
             [zoom-scale]="'page-fit'"
+            [fit-to-page]="true"
             [autoresize]="true"
-            [show-all]="true"
-            class="mx-auto d-fluid"
-            style="width: 100%; height: 40vw"
+            class="mx-auto"
+            style="min-width: 100%; min-height: 20vh; display: inline-block"
 		></pdf-viewer>
 		<a 
-			*ngIf="this.platform.ANDROID"
-			href="{{'https://docs.google.com/viewerng/viewer?url=http:'+item.fields.attachment[0].fields.file.url}}"
-			target="_blank" rel="noopener"
-			class="btn btn-primary"
-		>
-			View PDF
-		</a>
-		<a 
-			*ngIf="!this.platform.ANDROID"
 			href={{item.fields.attachment[0].fields.file.url}}
 			target="_blank" rel="noopener"
 			class="btn btn-primary"
