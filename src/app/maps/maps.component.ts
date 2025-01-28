@@ -9,6 +9,7 @@ import { Routes } from '@angular/router';
 import { ToHtmlPipe } from '../to-html.pipe';
 import { DatePipePipe } from '../date-pipe.pipe';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { Platform } from '@angular/cdk/platform'
 
 @Component({
   selector: 'app-maps',
@@ -19,9 +20,10 @@ export class MapsComponent {
   textBox = ``;
   text = '';
   array = [];
-  constructor(public contentService: ContentService, public requestService: RequestService) {}
+  constructor(public contentService: ContentService, public requestService: RequestService, public platform: Platform) {}
 
   ngOnInit(): void {
+    console.log(this.platform.ANDROID)
     this.contentService.getTextBoxes().subscribe(textBoxes => {
       textBoxes.items.forEach((element) => {
         console.log(element);
