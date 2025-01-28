@@ -6,7 +6,8 @@ import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { Entry } from 'contentful';
 import { RequestService } from '../request.service';
 import { Routes } from '@angular/router';
-import { ToHtmlPipe } from '../to-html.pipe'
+import { ToHtmlPipe } from '../to-html.pipe';
+import { DatePipePipe } from '../date-pipe.pipe';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @Component({

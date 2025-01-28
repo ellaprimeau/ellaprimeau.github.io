@@ -4,14 +4,34 @@
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
 
-$primary: #eb34bd;
+$primary: #C49AC8;
 $secondary: #e0b4da;
-// $body-color: #3b343a;
+$body-bg: #191825;
+$body-color: #C49AC8;
 
+body {
+	background-image: url(assets/background.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.acrylic {
+	-webkit-backdrop-filter: blur(1.5vw);
+    backdrop-filter: blur(1.5vw);
+    // background-color: rgba(196,154,200,.5);
+    background-image: radial-gradient(
+    	farthest-corner at 40px 40px,
+		rgba(196,138,201,.2) 0%,
+		rgba(143,65,150,.06) 100%,
+		// rgba(143,65,150,0) 100%
+    )
+}
 
 $theme-colors: (
 	"primary": $primary,
-	"secondary": $secondary
+	"secondary": $secondary,
+	"body-color": $body-color,
+	"body-bg": $body-bg
 );
 
 $grid-columns: 14;

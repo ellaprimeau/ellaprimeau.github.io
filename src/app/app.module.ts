@@ -11,6 +11,7 @@ import { MapBarComponent } from './maps/map-bar/map-bar.component';
 import { RouteInfoComponent } from './maps/route-info/route-info.component';
 import { provideHttpClient } from '@angular/common/http';
 import { ToHtmlPipe } from './to-html.pipe';
+import { DatePipePipe } from './date-pipe.pipe';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     HomeComponent,
     MapBarComponent,
     RouteInfoComponent,
-    ToHtmlPipe
+    ToHtmlPipe,
+    DatePipePipe
   ],
   imports: [
     BrowserModule,

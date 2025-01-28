@@ -10,6 +10,7 @@ export interface TypeMapPostFields {
     description?: EntryFieldTypes.RichText;
     tags?: EntryFieldTypes.Object;
     attachment?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
+    creationDate?: EntryFieldTypes.Date;    
 }
 
 // export type TypeTextBoxSkeleton = EntrySkeletonType<TypeTextBoxFields, "textBox">;
