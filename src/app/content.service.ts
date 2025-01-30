@@ -25,7 +25,8 @@ export class ContentService {
     console.log(process.env.CONTENTFUL_ACCESS_TOKEN);
     return from(
       this.client.getEntries<TypeMapPostSkeleton>(Object.assign({
-        content_type: 'ellasitemapPost'
+        content_type: 'ellasitemapPost',
+        order: '-fields.creationDate'
       }, query))
     );
   }

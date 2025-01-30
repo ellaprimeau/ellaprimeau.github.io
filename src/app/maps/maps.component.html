@@ -1,5 +1,5 @@
 <app-map-bar></app-map-bar>
-<div class="acrylic rounded-5 col-xl-6 col-sm-10 mx-3 mx-sm-auto p-5 mb-5" *ngFor="let item of array">
+<div class="acrylic rounded-5 col-xl-8 col-sm-10 mx-3 mx-sm-auto p-5 mb-5" *ngFor="let item of array">
 	<h1 class="mb-0">{{item.fields.title}}</h1>
 	<p style="font-size: .75rem;">
 		<u><b>Created</b></u>: {{item.fields.creationDate | datePipe}} <br>
@@ -8,19 +8,12 @@
 	<div>
 		<div [innerHtml]="item.fields.description | toHtml"></div>
 		<!-- <img class="img-fluid" src="{{item.fields.attachment[0].fields.file.url}}"><img> -->
-		<pdf-viewer 
+		<img 
 			[src]="item.fields.attachment[0].fields.file.url"
-            [render-text]="false"
-            [original-size]="true"
-            [zoom]=".9"
-            [zoom-scale]="'page-fit'"
-            [fit-to-page]="true"
-            [autoresize]="true"
-            class="mx-auto"
-            style="min-width: 100%; min-height: 20vh; display: inline-block"
-		></pdf-viewer>
+            class="img-fluid mb-4"
+		>
 		<a 
-			href={{item.fields.attachment[0].fields.file.url}}
+			href={{item.fields.attachment[1].fields.file.url}}
 			target="_blank" rel="noopener"
 			class="btn btn-primary"
 		>
